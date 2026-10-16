@@ -1,8 +1,51 @@
-# Resumen de JavaScript: Introducción, Estructuras de control y Funciones
+# Resumen de JavaScript: Introducción, Estructuras de control, Funciones, Arrays y Objetos
 
-Síntesis de los 23 temas de estas tres secciones de [Aprende JavaScript](https://www.aprendejavascript.dev/), curso de midudev. Cada tema incluye título, subtítulo, definición breve y un ejemplo propio para practicar.
+Síntesis de los 35 temas de estas cinco secciones de [Aprende JavaScript](https://www.aprendejavascript.dev/), curso de midudev. Cada tema incluye título, subtítulo, definición breve y un ejemplo propio para practicar.
 
 Los ejemplos son independientes: ejecuta cada bloque por separado en la consola del navegador. Los comentarios junto a `console.log()` indican la salida esperada.
+
+## Índice
+
+1. [Introducción](#1-introducción)
+    - [1.1. ¿Qué es JavaScript?](#11-qué-es-javascript)
+    - [1.2. La consola del navegador](#12-la-consola-del-navegador)
+    - [1.3. Tipos de datos](#13-tipos-de-datos)
+    - [1.4. Operadores de comparación](#14-operadores-de-comparación)
+    - [1.5. Operadores lógicos](#15-operadores-lógicos)
+    - [1.6. Variables](#16-variables)
+    - [1.7. Comentarios](#17-comentarios)
+    - [1.8. Console.log](#18-consolelog)
+    - [1.9. Operador typeof](#19-operador-typeof)
+    - [1.10. null y undefined](#110-null-y-undefined)
+2. [Estructuras de control](#2-estructuras-de-control)
+    - [2.1. Condicional if](#21-condicional-if)
+    - [2.2. Bucles con while](#22-bucles-con-while)
+    - [2.3. Bucles con do while](#23-bucles-con-do-while)
+    - [2.4. Expresiones y Declaraciones](#24-expresiones-y-declaraciones)
+    - [2.5. Bucles con for](#25-bucles-con-for)
+    - [2.6. Condiciones con Switch](#26-condiciones-con-switch)
+3. [Funciones](#3-funciones)
+    - [3.1. Tu primera función](#31-tu-primera-función)
+    - [3.2. Parámetros](#32-parámetros)
+    - [3.3. Function Expression](#33-function-expression)
+    - [3.4. Funciones flecha](#34-funciones-flecha)
+    - [3.5. Recursividad](#35-recursividad)
+    - [3.6. Scope (Ámbito)](#36-scope-ámbito)
+    - [3.7. Closures (Clausuras)](#37-closures-clausuras)
+4. [Arrays](#4-arrays)
+    - [4.1. ¿Qué son los Arrays en JavaScript?](#41-qué-son-los-arrays-en-javascript)
+    - [4.2. Métodos](#42-métodos)
+    - [4.3. Iteración y Recorrido de Arrays](#43-iteración-y-recorrido-de-arrays)
+    - [4.4. Buscar en Arrays](#44-buscar-en-arrays)
+    - [4.5. Ordenar Arrays](#45-ordenar-arrays)
+    - [4.6. Transformar Arrays](#46-transformar-arrays)
+    - [4.7. Matrices con Arrays](#47-matrices-con-arrays)
+    - [4.8. Algoritmos con Arrays](#48-algoritmos-con-arrays)
+5. [Objetos](#5-objetos)
+    - [5.1. Objetos](#51-objetos)
+    - [5.2. Atajos y propiedades computadas](#52-atajos-y-propiedades-computadas)
+    - [5.3. Transformación a Array e iteración](#53-transformación-a-array-e-iteración)
+    - [5.4. Operador de encadenamiento opcional](#54-operador-de-encadenamiento-opcional)
 
 ## 1. Introducción
 
@@ -509,3 +552,105 @@ console.log(otroAhorro(3)); // 3
 ```
 
 Fuente: [Closures (Clausuras)](https://www.aprendejavascript.dev/clase/funciones/closures).
+
+```javascript
+const producto = {
+  nombre: 'Mochila',
+  precio: 350,
+  describir() {
+    return 'Producto disponible';
+  }
+};
+
+const clave = 'precio';
+console.log(producto.nombre); // Mochila
+console.log(producto[clave]); // 350
+console.log(producto.describir()); // Producto disponible
+
+producto.precio = 300;
+producto.disponible = true;
+console.log(producto.precio, producto.disponible); // 300 true
+
+delete producto.disponible;
+console.log(producto.disponible); // undefined
+```
+
+Fuente: [Objetos](https://www.aprendejavascript.dev/clase/objetos/introduccion).
+
+### 5.2. Atajos y propiedades computadas
+
+#### Simplificar la creación y extracción de propiedades
+
+**Definición breve:** Si una propiedad y una variable tienen el mismo nombre, puedes escribir `{ nombre }` en lugar de `{ nombre: nombre }`. Una clave computada usa `[expresion]` para calcular su nombre. La desestructuración extrae propiedades a variables y permite renombrarlas, asignar valores por defecto cuando su valor es `undefined` y acceder a objetos anidados.
+
+**Ejemplo:** combinar una propiedad abreviada, una clave dinámica y la desestructuración.
+
+```javascript
+const nombre = 'Luna';
+const clave = 'puntos';
+
+const perfil = {
+  nombre,
+  [clave]: 12,
+  contacto: { ciudad: 'Puebla' }
+};
+
+const {
+  nombre: alias,
+  nivel = 1,
+  contacto: { ciudad }
+} = perfil;
+
+console.log(alias, nivel); // Luna 1
+console.log(perfil.puntos); // 12
+console.log(ciudad); // Puebla
+```
+
+Fuente: [Atajos y propiedades computadas](https://www.aprendejavascript.dev/clase/objetos/atajos).
+
+### 5.3. Transformación a Array e iteración
+
+#### Obtener claves, valores o pares para recorrer un objeto
+
+**Definición breve:** `Object.keys()` devuelve un array de claves, `Object.values()` uno de valores y `Object.entries()` uno de pares `[clave, valor]`. Estos métodos incluyen propiedades propias, enumerables y con clave de texto. `for...in` también recorre propiedades enumerables con clave de texto, pero puede incluir las heredadas. Los arrays resultantes permiten usar `forEach()`, `for...of` y otros métodos.
+
+**Ejemplo:** obtener distintas vistas de un inventario y recorrer sus entradas.
+
+```javascript
+const inventario = { lapices: 8, libretas: 3 };
+
+console.log(Object.keys(inventario)); // ['lapices', 'libretas']
+console.log(Object.values(inventario)); // [8, 3]
+console.log(Object.entries(inventario)); // [['lapices', 8], ['libretas', 3]]
+
+for (const [articulo, cantidad] of Object.entries(inventario)) {
+  console.log(articulo + ': ' + cantidad);
+}
+// Salida, una línea por entrada: lapices: 8 / libretas: 3
+```
+
+Fuente: [Transformación a Array e iteración](https://www.aprendejavascript.dev/clase/objetos/iterar).
+
+### 5.4. Operador de encadenamiento opcional
+
+#### Consultar propiedades anidadas cuando puede faltar información
+
+**Definición breve:** El operador `?.` detiene el acceso y devuelve `undefined` cuando la referencia que comprueba es `null` o `undefined`. Permite consultar estructuras anidadas sin intentar leer propiedades de un valor ausente. Debe colocarse en cada nivel que pueda faltar. La variable raíz debe estar declarada; el operador no evita un `ReferenceError` por un identificador inexistente.
+
+**Ejemplo:** consultar datos presentes, ausentes y un objeto con valor `null`.
+
+```javascript
+const usuario = {
+  nombre: 'Ana',
+  preferencias: { tema: 'oscuro' }
+};
+
+console.log(usuario.preferencias?.tema); // oscuro
+console.log(usuario.direccion?.ciudad); // undefined
+console.log(usuario.contacto?.telefono?.numero); // undefined
+
+const visitante = null;
+console.log(visitante?.nombre); // undefined
+```
+
+Fuente: [Operador de encadenamiento opcional](https://www.aprendejavascript.dev/clase/objetos/optional-chaining).
