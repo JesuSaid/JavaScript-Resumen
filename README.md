@@ -1,6 +1,6 @@
-# Resumen de JavaScript: Introducción, Estructuras de control, Funciones, Arrays y Objetos
+# Resumen de JavaScript: Introducción, Estructuras de control, Funciones, Arrays, Objetos, Tipos de datos primitivos y Referencias y Prototipos
 
-Síntesis de los 35 temas de estas cinco secciones de [Aprende JavaScript](https://www.aprendejavascript.dev/), curso de midudev. Cada tema incluye título, subtítulo, definición breve y un ejemplo propio para practicar.
+Síntesis de los 45 temas de estas siete secciones de [Aprende JavaScript](https://www.aprendejavascript.dev/), curso de midudev. Cada tema incluye título, subtítulo, definición breve y un ejemplo propio para practicar.
 
 Los ejemplos son independientes: ejecuta cada bloque por separado en la consola del navegador. Los comentarios junto a `console.log()` indican la salida esperada.
 
@@ -46,6 +46,18 @@ Los ejemplos son independientes: ejecuta cada bloque por separado en la consola 
     - [5.2. Atajos y propiedades computadas](#52-atajos-y-propiedades-computadas)
     - [5.3. Transformación a Array e iteración](#53-transformación-a-array-e-iteración)
     - [5.4. Operador de encadenamiento opcional](#54-operador-de-encadenamiento-opcional)
+6. [Tipos de datos primitivos](#6-tipos-de-datos-primitivos)
+    - [6.1. Métodos en tipos primitivos](#61-métodos-en-tipos-primitivos)
+    - [6.2. String](#62-string)
+    - [6.3. Number](#63-number)
+    - [6.4. BigInt](#64-bigint)
+    - [6.5. Symbol](#65-symbol)
+7. [Referencias y Prototipos](#7-referencias-y-prototipos)
+    - [7.1. Valor y Referencia](#71-valor-y-referencia)
+    - [7.2. Qué son los prototipos](#72-qué-son-los-prototipos)
+    - [7.3. Funciones constructoras e instancias](#73-funciones-constructoras-e-instancias)
+    - [7.4. Clases](#74-clases)
+    - [7.5. Herencia en Clases](#75-herencia-en-clases)
 
 ## 1. Introducción
 
@@ -654,3 +666,108 @@ console.log(visitante?.nombre); // undefined
 ```
 
 Fuente: [Operador de encadenamiento opcional](https://www.aprendejavascript.dev/clase/objetos/optional-chaining).
+```javascript
+function Libro(titulo) {
+  this.titulo = titulo;
+}
+
+Libro.prototype.describir = function () {
+  return 'Libro: ' + this.titulo;
+};
+
+const primero = new Libro('El faro');
+const segundo = new Libro('La isla');
+
+console.log(primero.describir()); // Libro: El faro
+console.log(primero !== segundo); // true
+console.log(primero.describir === segundo.describir); // true
+console.log(Object.getPrototypeOf(primero) === Libro.prototype); // true
+console.log(primero instanceof Libro); // true
+```
+
+Fuente: [Funciones constructoras e instancias](https://www.aprendejavascript.dev/clase/referencia-prototipo/funciones-constructoras-instancias).
+
+### 7.4. Clases
+
+#### Agrupar la construcción de instancias y sus comportamientos
+
+**Definición breve:** `class` ofrece una sintaxis para organizar objetos sobre el sistema de prototipos. `constructor` inicializa cada instancia y los métodos habituales se comparten mediante el prototipo. `static` define miembros de la clase; `get` y `set` controlan el acceso como propiedades, y `#` declara campos privados. Las clases se instancian con `new` y deben estar inicializadas antes de usarse.
+
+**Ejemplo:** combinar un campo privado, un método, un acceso por propiedad y una fábrica estática.
+
+```javascript
+class Marcador {
+  #puntos;
+
+  constructor(inicial = 0) {
+    this.#puntos = inicial;
+  }
+
+  get puntos() {
+    return this.#puntos;
+  }
+
+  set puntos(valor) {
+    this.#puntos = valor;
+  }
+
+  sumar() {
+    this.#puntos++;
+  }
+
+  static crear() {
+    return new Marcador();
+  }
+}
+
+const marcador = Marcador.crear();
+marcador.puntos = 4;
+marcador.sumar();
+console.log(marcador.puntos); // 5
+console.log(marcador instanceof Marcador); // true
+```
+
+Fuente: [Clases](https://www.aprendejavascript.dev/clase/referencia-prototipo/clases).
+
+### 7.5. Herencia en Clases
+
+#### Especializar una clase y reutilizar el comportamiento de su clase base
+
+**Definición breve:** `extends` crea una clase derivada que hereda métodos mediante la cadena de prototipos. En su constructor, `super()` llama al constructor de la clase base y debe ejecutarse antes de usar `this`. La clase derivada puede añadir métodos o sobrescribirlos. `super.metodo()` permite reutilizar el comportamiento de la base dentro de una sobrescritura.
+
+**Ejemplo:** heredar un saludo y ampliar un método de presentación.
+
+```javascript
+class Usuario {
+  constructor(nombre) {
+    this.nombre = nombre;
+  }
+
+  saludar() {
+    return 'Hola, ' + this.nombre;
+  }
+
+  presentarse() {
+    return this.nombre;
+  }
+}
+
+class Estudiante extends Usuario {
+  constructor(nombre, curso) {
+    super(nombre);
+    this.curso = curso;
+  }
+
+  presentarse() {
+    return super.presentarse() + ' estudia ' + this.curso;
+  }
+}
+
+const estudiante = new Estudiante('Eva', 'JavaScript');
+console.log(estudiante.saludar()); // Hola, Eva
+console.log(estudiante.presentarse()); // Eva estudia JavaScript
+console.log(estudiante instanceof Estudiante); // true
+console.log(estudiante instanceof Usuario); // true
+```
+
+Fuente: [Herencia en Clases](https://www.aprendejavascript.dev/clase/referencia-prototipo/herencia-en-clases).
