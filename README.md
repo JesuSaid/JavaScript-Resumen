@@ -671,6 +671,210 @@ console.log(visitante?.nombre); // undefined
 
 Fuente: [Operador de encadenamiento opcional](https://www.aprendejavascript.dev/clase/objetos/optional-chaining).
 
+## 6. Tipos de datos primitivos
+
+Valores básicos del lenguaje, sus métodos y sus particularidades al trabajar con texto, números e identificadores.
+
+### 6.1. Métodos en tipos primitivos
+
+#### Usar métodos sin convertir permanentemente un valor en objeto
+
+**Definición breve:** Los primitivos son valores inmutables. Al consultar propiedades o métodos de un `string`, `number`, `boolean`, `bigint` o `symbol`, JavaScript ofrece el comportamiento de un objeto envolvente temporal. El valor sigue siendo primitivo. `null` y `undefined` no admiten este acceso. Para crear primitivos, usa literales o conversiones sin `new`.
+
+**Ejemplo:** llamar métodos y comprobar que el valor original mantiene su tipo y contenido.
+
+```javascript
+const texto = 'prueba';
+const mayusculas = texto.toUpperCase();
+const numero = 42;
+
+console.log(mayusculas); // PRUEBA
+console.log(texto); // prueba
+console.log(typeof texto); // string
+console.log(numero.toString()); // 42
+console.log(typeof numero.toString()); // string
+// null.toString() produciría TypeError.
+```
+
+Fuente: [Métodos en tipos primitivos](https://www.aprendejavascript.dev/clase/tipos-de-datos-primitivos/metodos-en-tipos-primitivos).
+
+### 6.2. String
+
+#### Crear, buscar y transformar texto inmutable
+
+**Definición breve:** `string` representa texto entre comillas simples, dobles o acentos graves. Las plantillas con acentos graves permiten interpolar expresiones mediante `${expresion}` y escribir varias líneas. Las transformaciones generan nuevos textos. `length` mide unidades UTF-16, que no siempre equivalen a caracteres visibles. Secuencias como `\n` representan saltos de línea.
+
+| Operación | Herramientas habituales |
+| --- | --- |
+| Buscar o comprobar contenido | `indexOf()`, `includes()`, `startsWith()`, `endsWith()` |
+| Extraer una parte | `slice()`, `substring()` |
+| Cambiar mayúsculas o espacios | `toUpperCase()`, `toLowerCase()`, `trim()` |
+| Reemplazar texto | `replace()`, `replaceAll()` |
+| Dividir, repetir o rellenar | `split()`, `repeat()`, `padStart()`, `padEnd()` |
+| Convertir otros valores a texto | `String(valor)` |
+
+**Ejemplo:** limpiar una entrada y obtener distintas versiones del texto.
+
+```javascript
+const entrada = '  ana,LUIS  ';
+const limpia = entrada.trim();
+
+console.log(limpia.length); // 8
+console.log(limpia.toUpperCase()); // ANA,LUIS
+console.log(limpia.includes('LUIS')); // true
+console.log(limpia.slice(0, 3)); // ana
+console.log(limpia.replace('LUIS', 'Eva')); // ana,Eva
+console.log(limpia.split(',')); // ['ana', 'LUIS']
+console.log(`Hola, ${limpia.slice(0, 3)}`); // Hola, ana
+console.log(entrada.length); // 12 (la entrada original conserva sus espacios)
+```
+
+Fuente: [String](https://www.aprendejavascript.dev/clase/tipos-de-datos-primitivos/string).
+
+### 6.3. Number
+
+#### Trabajar con números y reconocer sus límites de precisión
+
+**Definición breve:** `number` representa enteros y decimales mediante punto flotante de 64 bits. Incluye `Infinity`, `-Infinity` y `NaN`. Los enteros seguros están entre `Number.MIN_SAFE_INTEGER` y `Number.MAX_SAFE_INTEGER`. `Number()` convierte valores; `parseInt()` y `parseFloat()` interpretan texto numérico. Los métodos `Number.isNaN()`, `Number.isFinite()` y `Number.isSafeInteger()` permiten comprobar resultados. `toFixed()` formatea decimales y devuelve texto.
+
+**Ejemplo:** convertir, formatear y comprobar números.
+
+```javascript
+const precio = Number('18.75');
+
+console.log(precio.toFixed(1)); // 18.8
+console.log(typeof precio.toFixed(1)); // string
+console.log(Number.parseInt('24px', 10)); // 24
+console.log(Number.parseFloat('3.5kg')); // 3.5
+console.log(Number.isNaN(Number('hola'))); // true
+console.log(1 / 0); // Infinity
+console.log(Number.isFinite(Infinity)); // false
+console.log(Number.isSafeInteger(2 ** 53)); // false
+console.log(0.1 + 0.2); // 0.30000000000000004 (aproximación binaria)
+```
+
+Fuente: [Number](https://www.aprendejavascript.dev/clase/tipos-de-datos-primitivos/number).
+
+### 6.4. BigInt
+
+#### Representar enteros grandes sin perder precisión
+
+**Definición breve:** `bigint` representa enteros de tamaño arbitrario, limitado por los recursos disponibles. Se crea con el sufijo `n` o con `BigInt()`. Para un entero grande, partir de texto evita el redondeo previo de un `number`. La división descarta la parte fraccionaria. Las operaciones aritméticas con `number` exigen conversión explícita. `Math` y `JSON.stringify()` no admiten directamente estos valores.
+
+**Ejemplo:** realizar operaciones exactas y convertir un entero grande a texto.
+
+```javascript
+const grande = 9007199254740993n;
+const desdeTexto = BigInt('12345678901234567890');
+
+console.log(grande + 2n); // 9007199254740995n
+console.log(desdeTexto); // 12345678901234567890n
+console.log(9n / 2n); // 4n
+console.log(typeof grande); // bigint
+console.log(grande.toString()); // 9007199254740993
+// grande + 1 produciría TypeError; grande + 1n sí es válido.
+```
+
+Fuente: [BigInt](https://www.aprendejavascript.dev/clase/tipos-de-datos-primitivos/bigint).
+
+### 6.5. Symbol
+
+#### Crear identificadores únicos y claves sin colisiones
+
+**Definición breve:** Cada llamada a `Symbol(descripcion)` crea un identificador único, aunque se repita la descripción. `Symbol.for(clave)` obtiene o crea uno en un registro global y `Symbol.keyFor()` consulta su clave. Los símbolos pueden usarse como claves de objetos. Estas propiedades no aparecen en `Object.keys()`, pero pueden recuperarse con `Object.getOwnPropertySymbols()`.
+
+**Ejemplo:** distinguir símbolos con igual descripción y acceder a una propiedad simbólica.
+
+```javascript
+const id = Symbol('id');
+const otroId = Symbol('id');
+const usuario = { nombre: 'Mara', [id]: 123 };
+
+console.log(id === otroId); // false
+console.log(usuario[id]); // 123
+console.log(Object.keys(usuario)); // ['nombre']
+console.log(Object.getOwnPropertySymbols(usuario).length); // 1
+console.log(Symbol.for('sesion') === Symbol.for('sesion')); // true
+console.log(Symbol.keyFor(Symbol.for('sesion'))); // sesion
+```
+
+Fuente: [Symbol](https://www.aprendejavascript.dev/clase/tipos-de-datos-primitivos/symbol).
+
+## 7. Referencias y Prototipos
+
+Cómo se comparten los objetos, cómo se buscan sus propiedades y cómo crear instancias con comportamiento reutilizable.
+
+### 7.1. Valor y Referencia
+
+#### Distinguir la copia de un valor de la copia de un objeto
+
+**Definición breve:** JavaScript copia valores al asignar variables o pasar argumentos. En el caso de un objeto, el valor copiado es una referencia al mismo objeto: sus modificaciones se comparten. Reasignar un parámetro no reemplaza la variable externa. Una copia con `{ ...objeto }` es superficial: los objetos anidados siguen compartiéndose.
+
+**Ejemplo:** comparar reasignaciones, referencias compartidas y una copia superficial.
+
+```javascript
+let puntos = 10;
+let copiaPuntos = puntos;
+copiaPuntos = 20;
+console.log(puntos, copiaPuntos); // 10 20
+
+const original = { nivel: 1, equipo: { color: 'azul' } };
+const alias = original;
+alias.nivel = 2;
+
+const copia = { ...original };
+copia.nivel = 3;
+copia.equipo.color = 'rojo';
+
+function reemplazar(jugador) {
+  jugador = { nivel: 99 }; // Solo reasigna el parámetro local.
+}
+reemplazar(original);
+
+console.log(original.nivel, copia.nivel); // 2 3
+console.log(original.equipo.color); // rojo
+console.log(original === alias); // true
+console.log(original === copia); // false
+```
+
+Fuente: [Valor y Referencia](https://www.aprendejavascript.dev/clase/referencia-prototipo/objetos-referencia).
+
+### 7.2. Qué son los prototipos
+
+#### Compartir propiedades mediante una cadena de objetos
+
+**Definición breve:** Un objeto tiene como prototipo otro objeto o `null`. Al consultar una propiedad, JavaScript busca primero en el objeto y luego en su cadena de prototipos, hasta encontrarla o llegar a `null`. `Object.create()` establece el prototipo al crear un objeto; `Object.getPrototypeOf()` lo consulta y `Object.setPrototypeOf()` permite cambiarlo. Conviene evitar el acceso histórico mediante `__proto__`.
+
+**Ejemplo:** usar un método heredado y distinguir propiedades propias de heredadas.
+
+```javascript
+const dispositivo = {
+  categoria: 'Electrónico',
+  iniciar() {
+    return this.nombre + ' listo';
+  }
+};
+
+const radio = Object.create(dispositivo);
+radio.nombre = 'Radio';
+
+console.log(radio.iniciar()); // Radio listo
+console.log(radio.categoria); // Electrónico
+console.log(Object.hasOwn(radio, 'categoria')); // false
+console.log(Object.getPrototypeOf(radio) === dispositivo); // true
+console.log(radio.inexistente); // undefined
+```
+
+Fuente: [Qué son los prototipos](https://www.aprendejavascript.dev/clase/referencia-prototipo/prototipos).
+
+### 7.3. Funciones constructoras e instancias
+
+#### Crear objetos con datos propios y métodos compartidos
+
+**Definición breve:** Una función constructora se invoca con `new` para crear instancias. `new` crea un objeto, lo enlaza con el `prototype` del constructor y ejecuta la función usando ese objeto como `this`. Las propiedades particulares se asignan en el constructor; los métodos reutilizables pueden definirse en su `prototype`. `instanceof` comprueba la presencia de ese prototipo en la cadena de una instancia.
+
+**Ejemplo:** crear dos libros distintos que comparten el mismo método.
+
 ```javascript
 function Libro(titulo) {
   this.titulo = titulo;
@@ -776,4 +980,3 @@ console.log(estudiante instanceof Usuario); // true
 ```
 
 Fuente: [Herencia en Clases](https://www.aprendejavascript.dev/clase/referencia-prototipo/herencia-en-clases).
-
