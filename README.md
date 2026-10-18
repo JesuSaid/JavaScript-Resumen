@@ -474,14 +474,18 @@ Fuente: [Function Expression](https://www.aprendejavascript.dev/clase/funciones/
 **Ejemplo:** comparar un retorno implícito con uno explícito.
 
 ```javascript
-const duplicar = numero => numero * 2;
+// Declaración de función regular
+function sumar(a, b) {
+  return a + b
+}
 
-const sumar = (a, b) => {
-  return a + b;
-};
+// Función flecha
+const sumarFlecha = (a, b) => {
+  return a + b
+}
 
-console.log(duplicar(9)); // 18
-console.log(sumar(6, 4)); // 10
+// Función flecha con return implícito
+const sumarFlecha = (a, b) => a + b
 ```
 
 Fuente: [Funciones flecha](https://www.aprendejavascript.dev/clase/funciones/flecha).
@@ -666,6 +670,7 @@ console.log(visitante?.nombre); // undefined
 ```
 
 Fuente: [Operador de encadenamiento opcional](https://www.aprendejavascript.dev/clase/objetos/optional-chaining).
+
 ```javascript
 function Libro(titulo) {
   this.titulo = titulo;
@@ -771,3 +776,4 @@ console.log(estudiante instanceof Usuario); // true
 ```
 
 Fuente: [Herencia en Clases](https://www.aprendejavascript.dev/clase/referencia-prototipo/herencia-en-clases).
+
