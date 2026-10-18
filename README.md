@@ -1,4 +1,4 @@
-# Resumen de JavaScript: Introducción, Estructuras de control, Funciones, Arrays, Objetos, Tipos de datos primitivos y Referencias y Prototipos
+# Resumen de JavaScript: Introducción, Estructuras de control, Funciones, Arrays, Objetos, Tipos de datos primitivos, Referencias y Prototipos y Manejo de errores
 
 Síntesis de los 45 temas de estas siete secciones de [Aprende JavaScript](https://www.aprendejavascript.dev/), curso de midudev. Cada tema incluye título, subtítulo, definición breve y un ejemplo propio para practicar.
 
@@ -58,6 +58,10 @@ Los ejemplos son independientes: ejecuta cada bloque por separado en la consola 
     - [7.3. Funciones constructoras e instancias](#73-funciones-constructoras-e-instancias)
     - [7.4. Clases](#74-clases)
     - [7.5. Herencia en Clases](#75-herencia-en-clases)
+8. [Manejo de errores](#8-manejo-de-errores)
+    - [8.1. Try/Catch](#81-trycatch)
+    - [8.2. Finally](#82-finally)
+    - [8.3. Errores Personalizados](#83-errores-personalizados)
 
 ## 1. Introducción
 
@@ -980,3 +984,106 @@ console.log(estudiante instanceof Usuario); // true
 ```
 
 Fuente: [Herencia en Clases](https://www.aprendejavascript.dev/clase/referencia-prototipo/herencia-en-clases).
+
+## 8. Manejo de errores
+
+Herramientas para capturar excepciones, ejecutar tareas de limpieza y comunicar fallos con información útil.
+
+### 8.1. Try/Catch
+
+#### Capturar una excepción y decidir cómo continuar
+
+**Definición breve:** `try` contiene código que puede lanzar una excepción durante su ejecución síncrona. Si ocurre, se omiten las instrucciones restantes del bloque y se ejecuta `catch`; si no, `catch` se omite. Un objeto `Error` permite consultar `name`, `message` y, habitualmente, `stack` para diagnosticar el problema. Entre los errores comunes están `ReferenceError`, `TypeError` y `SyntaxError`.
+
+Para validaciones simples puedes usar `if` o `?.`; `try/catch` resulta útil ante operaciones como interpretar JSON que podría ser inválido.
+
+**Ejemplo:** capturar el error de un JSON con una coma final no permitida.
+
+```javascript
+const texto = '{"nombre": "Ana",}';
+
+try {
+  const usuario = JSON.parse(texto);
+  console.log(usuario.nombre); // No se ejecuta porque JSON.parse() falla.
+} catch (error) {
+  console.log('Error capturado:', error.name); // Error capturado: SyntaxError
+  console.log(typeof error.message); // string
+}
+
+console.log('El programa continúa'); // El programa continúa
+```
+
+Fuente: [Try/Catch](https://www.aprendejavascript.dev/clase/manejo-de-errores/try-catch).
+
+### 8.2. Finally
+
+#### Ejecutar la limpieza antes de completar una salida del bloque
+
+**Definición breve:** `finally` se ejecuta al abandonar `try` y su posible `catch`, tanto si la operación termina correctamente como si falla, e incluso antes de completar un `return`. Sirve para liberar recursos o restablecer estados. Puede usarse en `try/finally` sin `catch`; en ese caso, una excepción sigue propagándose después de la limpieza. Un `return` o `throw` dentro de `finally` reemplaza la salida pendiente.
+
+**Ejemplo:** comprobar que la limpieza ocurre antes del retorno, con y sin error.
+
+```javascript
+function procesar(simularFallo) {
+  try {
+    if (simularFallo) {
+      throw new Error('Dato inválido');
+    }
+    console.log('Procesando');
+    return 'Correcto';
+  } catch (error) {
+    console.log(error.message);
+    return 'Fallido';
+  } finally {
+    console.log('Limpieza completada');
+  }
+}
+
+console.log(procesar(false));
+// Salida: Procesando / Limpieza completada / Correcto
+
+console.log(procesar(true));
+// Salida: Dato inválido / Limpieza completada / Fallido
+```
+
+Fuente: [Finally](https://www.aprendejavascript.dev/clase/manejo-de-errores/finally).
+
+### 8.3. Errores Personalizados
+
+#### Lanzar errores descriptivos y distinguirlos por su tipo
+
+**Definición breve:** `throw` lanza una excepción e interrumpe el flujo actual hasta que un `catch` la gestione o quede sin capturar. `new Error(mensaje)` crea un error, pero no lo lanza por sí solo. Puedes usar tipos como `TypeError` o `RangeError`, o extender `Error` para añadir contexto y reconocer tus errores mediante `instanceof`. Los mensajes deben explicar el problema concreto.
+
+**Ejemplo:** definir un error con la cantidad inválida y capturarlo de forma específica.
+
+```javascript
+class ErrorCantidad extends Error {
+  constructor(cantidad) {
+    super('La cantidad debe ser un entero positivo');
+    this.name = 'ErrorCantidad';
+    this.cantidad = cantidad;
+  }
+}
+
+function validarCantidad(cantidad) {
+  if (!Number.isInteger(cantidad) || cantidad <= 0) {
+    throw new ErrorCantidad(cantidad);
+  }
+  return cantidad;
+}
+
+try {
+  console.log(validarCantidad(3)); // 3
+  validarCantidad(0);
+} catch (error) {
+  if (error instanceof ErrorCantidad) {
+    console.log(error.name + ': ' + error.message);
+    // ErrorCantidad: La cantidad debe ser un entero positivo
+    console.log('Valor recibido:', error.cantidad); // Valor recibido: 0
+  } else {
+    throw error; // Los errores de otro tipo se vuelven a lanzar.
+  }
+}
+```
+
+Fuente: [Errores Personalizados](https://www.aprendejavascript.dev/clase/manejo-de-errores/custom-errors).
