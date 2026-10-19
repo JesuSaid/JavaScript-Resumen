@@ -1,6 +1,6 @@
-# Resumen de JavaScript: Introducción, Estructuras de control, Funciones, Arrays, Objetos, Tipos de datos primitivos, Referencias y Prototipos y Manejo de errores
+# Resumen de JavaScript: Introducción, Estructuras de control, Funciones, Arrays, Objetos, Tipos de datos primitivos, Referencias, Prototipos y Manejo de errores y Programación asíncrona
 
-Síntesis de los 45 temas de estas siete secciones de [Aprende JavaScript](https://www.aprendejavascript.dev/), curso de midudev. Cada tema incluye título, subtítulo, definición breve y un ejemplo propio para practicar.
+Síntesis de los 53 temas de estas nueve secciones de [Aprende JavaScript](https://www.aprendejavascript.dev/), curso de midudev. Cada tema incluye título, subtítulo, definición breve y un ejemplo propio para practicar.
 
 Los ejemplos son independientes: ejecuta cada bloque por separado en la consola del navegador. Los comentarios junto a `console.log()` indican la salida esperada.
 
@@ -62,6 +62,12 @@ Los ejemplos son independientes: ejecuta cada bloque por separado en la consola 
     - [8.1. Try/Catch](#81-trycatch)
     - [8.2. Finally](#82-finally)
     - [8.3. Errores Personalizados](#83-errores-personalizados)
+9. [Programación asíncrona](#9-programación-asíncrona)
+    - [9.1. Callbacks](#91-callbacks)
+    - [9.2. Promises (Promesas) - Básico](#92-promises-promesas---básico)
+    - [9.3. Promises (Promesas) - Avanzado](#93-promises-promesas---avanzado)
+    - [9.4. Fetch API](#94-fetch-api)
+    - [9.5. async/await](#95-asyncawait)
 
 ## 1. Introducción
 
@@ -572,6 +578,242 @@ console.log(otroAhorro(3)); // 3
 ```
 
 Fuente: [Closures (Clausuras)](https://www.aprendejavascript.dev/clase/funciones/closures).
+
+## 4. Arrays
+
+Colecciones ordenadas para almacenar, recorrer, buscar y transformar varios valores.
+
+### 4.1. ¿Qué son los Arrays en JavaScript?
+
+#### Agrupar elementos y acceder a ellos mediante índices
+
+**Definición breve:** Un array es una colección ordenada que se escribe entre corchetes `[]`, con sus elementos separados por comas. Sus índices comienzan en `0` y `length` indica su longitud. Puede contener valores de distintos tipos, incluidos otros arrays. Declararlo con `const` impide reasignar la variable, pero permite modificar sus elementos.
+
+**Ejemplo:** consultar y cambiar elementos de una lista.
+
+```javascript
+const materiales = ['cuaderno', 'lápiz', 'regla'];
+
+console.log(materiales[0]); // cuaderno
+console.log(materiales.length); // 3
+
+materiales[1] = 'pluma';
+console.log(materiales); // ['cuaderno', 'pluma', 'regla']
+console.log(materiales[5]); // undefined
+```
+
+Fuente: [¿Qué son los Arrays en JavaScript?](https://www.aprendejavascript.dev/clase/arrays/arrays-que-son).
+
+### 4.2. Métodos
+
+#### Añadir, quitar y combinar elementos
+
+**Definición breve:** Los arrays ofrecen métodos para trabajar con sus elementos. `push()` añade al final y `unshift()` al inicio; ambos devuelven la nueva longitud. `pop()` elimina y devuelve el último elemento, y `shift()` el primero. Estos cuatro métodos modifican el array original. `concat()` y la propagación `...` permiten combinar arrays en uno nuevo.
+
+La propiedad `length` permite consultar la longitud; reducirla también elimina los elementos que quedan fuera del nuevo límite.
+
+**Ejemplo:** modificar una lista y crear otras a partir de ella.
+
+```javascript
+const tareas = ['leer', 'practicar'];
+
+console.log(tareas.push('repasar')); // 3
+console.log(tareas.pop()); // repasar
+console.log(tareas.unshift('preparar')); // 3
+console.log(tareas.shift()); // preparar
+
+const tareasCompletas = tareas.concat(['descansar']);
+const otraLista = [...tareas, 'evaluar'];
+console.log(tareasCompletas); // ['leer', 'practicar', 'descansar']
+console.log(otraLista); // ['leer', 'practicar', 'evaluar']
+
+tareas.length = 1;
+console.log(tareas); // ['leer']
+```
+
+Fuente: [Métodos](https://www.aprendejavascript.dev/clase/arrays/metodos).
+
+### 4.3. Iteración y Recorrido de Arrays
+
+#### Procesar cada elemento de una colección
+
+**Definición breve:** Recorrer un array consiste en ejecutar instrucciones para sus elementos. `for` y `while` permiten controlar manualmente el índice; `for...of` entrega directamente cada valor. `forEach()` llama a una función con el elemento, su índice y el array. Devuelve `undefined` y no admite `break` para detener el recorrido.
+
+**Ejemplo:** sumar valores con `for...of` y mostrar sus posiciones con `forEach()`.
+
+```javascript
+const precios = [10, 25, 15];
+let total = 0;
+
+for (const precio of precios) {
+  total = total + precio;
+}
+console.log(total); // 50
+
+precios.forEach((precio, indice) => {
+  console.log(indice, precio);
+});
+// Salida, una línea por elemento: 0 10 / 1 25 / 2 15
+```
+
+Fuente: [Iteración y Recorrido de Arrays](https://www.aprendejavascript.dev/clase/arrays/iteracion).
+
+### 4.4. Buscar en Arrays
+
+#### Comprobar condiciones y localizar valores o posiciones
+
+**Definición breve:** Los métodos de búsqueda permiten comprobar si un elemento existe, localizarlo o evaluar condiciones sobre la colección. Algunos reciben un valor concreto y otros una función que comprueba cada elemento.
+
+| Método | Resultado |
+| --- | --- |
+| `indexOf(valor)` | Índice de la primera coincidencia; `-1` si no existe. |
+| `includes(valor)` | Booleano que indica si contiene el valor. |
+| `some(condicion)` | `true` si al menos un elemento cumple la condición. |
+| `every(condicion)` | `true` si todos cumplen la condición. |
+| `find(condicion)` | Primer elemento que la cumple; `undefined` si no lo encuentra. |
+| `findIndex(condicion)` | Índice del primer elemento que la cumple; `-1` si no lo encuentra. |
+
+**Ejemplo:** buscar dentro de una lista de calificaciones.
+
+```javascript
+const calificaciones = [7, 9, 5, 10];
+
+console.log(calificaciones.indexOf(9)); // 1
+console.log(calificaciones.includes(8)); // false
+console.log(calificaciones.some(nota => nota < 6)); // true
+console.log(calificaciones.every(nota => nota >= 6)); // false
+console.log(calificaciones.find(nota => nota < 6)); // 5
+console.log(calificaciones.findIndex(nota => nota < 6)); // 2
+console.log(calificaciones.indexOf(8)); // -1
+console.log(calificaciones.find(nota => nota > 10)); // undefined
+```
+
+Fuente: [Buscar en Arrays](https://www.aprendejavascript.dev/clase/arrays/buscar).
+
+### 4.5. Ordenar Arrays
+
+#### Definir el criterio de ordenación y decidir si modificar el original
+
+**Definición breve:** `sort()` ordena y modifica el array original. Sin comparador, ordena según la representación textual de los elementos. Para números, `(a, b) => a - b` ordena de menor a mayor y `(a, b) => b - a` de mayor a menor. `toSorted()` devuelve un array nuevo; también puedes copiar con `...` antes de usar `sort()`.
+
+**Ejemplo:** ordenar una copia numéricamente y conservar el orden inicial de la lista.
+
+```javascript
+const numeros = [30, 4, 12];
+const ascendentes = [...numeros].sort((a, b) => a - b);
+const descendentes = numeros.toSorted((a, b) => b - a);
+
+console.log(ascendentes); // [4, 12, 30]
+console.log(descendentes); // [30, 12, 4]
+console.log(numeros); // [30, 4, 12]
+```
+
+Fuente: [Ordenar Arrays](https://www.aprendejavascript.dev/clase/arrays/ordenar).
+
+### 4.6. Transformar Arrays
+
+#### Filtrar, transformar y acumular resultados
+
+**Definición breve:** `filter()` crea un array con los elementos que cumplen una condición; `map()` crea otro con los valores transformados. `reduce()` acumula los elementos en un resultado, que puede ser un número, un array u otro valor. Estos métodos pueden encadenarse. Proporcionar un valor inicial a `reduce()` permite definir el acumulador, incluso para un array vacío.
+
+**Ejemplo:** seleccionar los números pares, multiplicarlos por tres y sumarlos.
+
+```javascript
+const numeros = [1, 2, 3, 4, 5];
+const pares = numeros.filter(numero => numero % 2 === 0);
+const triples = pares.map(numero => numero * 3);
+const total = triples.reduce((acumulado, numero) => acumulado + numero, 0);
+
+console.log(pares); // [2, 4]
+console.log(triples); // [6, 12]
+console.log(total); // 18
+console.log(numeros); // [1, 2, 3, 4, 5]
+```
+
+Fuente: [Transformar Arrays](https://www.aprendejavascript.dev/clase/arrays/transformacion).
+
+### 4.7. Matrices con Arrays
+
+#### Representar filas y columnas con arrays anidados
+
+**Definición breve:** Una matriz puede representarse como un array cuyos elementos son otros arrays. Se accede a cada celda mediante dos índices: `matriz[fila][columna]`, ambos desde cero. Para recorrer todas sus celdas se utilizan bucles anidados. Esta estructura sirve para tableros, tablas y datos organizados en dos dimensiones.
+
+**Ejemplo:** consultar una celda y sumar los valores de una matriz de dos filas y tres columnas.
+
+```javascript
+const matriz = [
+  [2, 4, 6],
+  [1, 3, 5]
+];
+
+console.log(matriz[1][2]); // 5
+
+let suma = 0;
+for (const fila of matriz) {
+  for (const valor of fila) {
+    suma = suma + valor;
+  }
+}
+console.log(suma); // 21
+```
+
+Fuente: [Matrices con Arrays](https://www.aprendejavascript.dev/clase/arrays/matrices).
+
+### 4.8. Algoritmos con Arrays
+
+#### Resolver problemas y estimar cómo crece el trabajo
+
+**Definición breve:** Un algoritmo es una secuencia de pasos para resolver un problema. Encontrar el máximo mediante un recorrido tiene complejidad `O(n)`: el trabajo crece proporcionalmente al tamaño del array. La búsqueda binaria necesita un array ordenado y descarta aproximadamente la mitad de los candidatos en cada paso; su complejidad es `O(log n)`.
+
+**Ejemplo:** encontrar el máximo y buscar una posición mediante búsqueda binaria.
+
+```javascript
+function encontrarMayor(numeros) {
+  if (numeros.length === 0) return undefined;
+
+  let mayor = numeros[0];
+  for (let i = 1; i < numeros.length; i++) {
+    if (numeros[i] > mayor) mayor = numeros[i];
+  }
+  return mayor;
+}
+
+function buscarBinario(ordenados, objetivo) {
+  let inicio = 0;
+  let fin = ordenados.length - 1;
+
+  while (inicio <= fin) {
+    const medio = Math.floor((inicio + fin) / 2);
+
+    if (ordenados[medio] === objetivo) return medio;
+
+    if (ordenados[medio] < objetivo) {
+      inicio = medio + 1;
+    } else {
+      fin = medio - 1;
+    }
+  }
+  return -1;
+}
+
+console.log(encontrarMayor([-8, -2, -5])); // -2
+console.log(buscarBinario([3, 8, 12, 20, 31], 20)); // 3
+console.log(buscarBinario([3, 8, 12, 20, 31], 9)); // -1
+```
+
+Fuente: [Algoritmos con Arrays](https://www.aprendejavascript.dev/clase/arrays/algoritmos).
+
+## 5. Objetos
+
+Estructuras para agrupar datos y comportamientos mediante propiedades con nombre.
+
+### 5.1. Objetos
+
+#### Modelar información con propiedades y métodos
+
+**Definición breve:** Un objeto reúne propiedades formadas por una clave y un valor. Se crea con `{}` y admite valores de cualquier tipo, incluidas funciones llamadas métodos. Las propiedades se consultan con punto o corchetes, se añaden o modifican mediante asignación y se eliminan con `delete`. `const` no impide modificar sus propiedades.
+
+**Ejemplo:** consultar y modificar la información de un producto.
 
 ```javascript
 const producto = {
@@ -1087,3 +1329,155 @@ try {
 ```
 
 Fuente: [Errores Personalizados](https://www.aprendejavascript.dev/clase/manejo-de-errores/custom-errors).
+## 9. Programación asíncrona
+
+Coordinación de tareas que terminan más tarde y permiten que el resto del programa continúe mientras esperan.
+
+### 9.1. Callbacks
+
+#### Pasar una función para ejecutarla en el momento adecuado
+
+**Definición breve:** Un callback es una función que se pasa a otra para que esta la invoque. Puede ejecutarse de forma síncrona o asíncrona, según la operación. `setTimeout()` programa una ejecución tras un retraso mínimo; `setInterval()` programa repeticiones que se detienen con `clearInterval()`. Muchas dependencias anidadas pueden producir código difícil de seguir, conocido como *callback hell*.
+
+**Ejemplo:** recibir un saludo después de que el código principal haya continuado.
+
+```javascript
+function prepararSaludo(nombre, callback) {
+  setTimeout(() => {
+    callback('Hola, ' + nombre);
+  }, 100);
+}
+
+console.log('Inicio');
+prepararSaludo('Nora', mensaje => {
+  console.log(mensaje);
+});
+console.log('El programa continúa');
+// Orden: Inicio / El programa continúa / Hola, Nora
+// El saludo aparece después del temporizador, no antes del último console.log().
+```
+
+Fuente: [Callbacks](https://www.aprendejavascript.dev/clase/programacion-asincrona/callbacks).
+
+### 9.2. Promises (Promesas) - Básico
+
+#### Representar un resultado futuro y encadenar operaciones
+
+**Definición breve:** Una promesa representa un resultado que puede estar pendiente (`pending`), cumplido (`fulfilled`) o rechazado (`rejected`). Una vez cumplida o rechazada, su estado no cambia. `new Promise()` recibe un ejecutor con `resolve` y `reject`. `.then()` transforma resultados y devuelve otra promesa; `.catch()` gestiona rechazos anteriores de la cadena. Devuelve el valor o la promesa del siguiente paso para encadenarlos correctamente.
+
+**Ejemplo:** duplicar un número de forma diferida y transformar el resultado.
+
+```javascript
+function duplicarDespues(numero) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (!Number.isFinite(numero)) {
+        reject(new TypeError('Se esperaba un número finito'));
+        return;
+      }
+      resolve(numero * 2);
+    }, 100);
+  });
+}
+
+duplicarDespues(6)
+  .then(resultado => resultado + 1)
+  .then(resultado => console.log(resultado)) // 13
+  .catch(error => console.log(error.message));
+```
+
+Fuente: [Promises (Promesas) - Básico](https://www.aprendejavascript.dev/clase/programacion-asincrona/promises-basico).
+
+### 9.3. Promises (Promesas) - Avanzado
+
+#### Coordinar varias promesas y conservar información sobre sus resultados
+
+**Definición breve:** Las promesas pueden combinarse para coordinar tareas. `Promise.resolve()` adopta un valor o promesa; `Promise.reject()` crea un rechazo. `.finally()` permite limpiar al finalizar y conserva el resultado, salvo que su callback lance un error o devuelva una promesa rechazada. Los combinadores no cancelan automáticamente las demás tareas.
+
+| Método | Comportamiento |
+| --- | --- |
+| `Promise.all()` | Espera todas y devuelve valores en el orden de entrada; rechaza si alguna falla. |
+| `Promise.race()` | Adopta la primera en completarse, con éxito o error. |
+| `Promise.allSettled()` | Espera todas y devuelve su estado y valor o motivo de rechazo. |
+
+**Ejemplo:** consultar todos los resultados aunque una operación falle.
+
+```javascript
+const tareas = [
+  Promise.resolve('Archivo listo'),
+  Promise.reject(new Error('Sin conexión'))
+];
+
+Promise.allSettled(tareas)
+  .then(resultados => {
+    for (const resultado of resultados) {
+      if (resultado.status === 'fulfilled') {
+        console.log('Éxito:', resultado.value);
+      } else {
+        console.log('Error:', resultado.reason.message);
+      }
+    }
+  })
+  .finally(() => console.log('Revisión terminada'));
+// Orden: Éxito: Archivo listo / Error: Sin conexión / Revisión terminada
+```
+
+Fuente: [Promises (Promesas) - Avanzado](https://www.aprendejavascript.dev/clase/programacion-asincrona/promises-avanzado).
+
+### 9.4. Fetch API
+
+#### Consultar servidores y procesar respuestas HTTP
+
+**Definición breve:** `fetch(url, opciones)` realiza una petición y devuelve una promesa con un objeto `Response`. `ok` indica un estado HTTP entre 200 y 299; `json()` lee e interpreta el cuerpo y devuelve otra promesa. Un estado 404 o 500 no rechaza por sí solo la promesa de `fetch`: comprueba `ok`. Las opciones permiten configurar `method`, `headers` y `body`, por ejemplo para enviar JSON.
+
+**Ejemplo:** consultar una publicación de la API pública de práctica usada por el curso. Requiere conexión y acceso al servicio.
+
+```javascript
+fetch('https://jsonplaceholder.typicode.com/posts/1')
+  .then(respuesta => {
+    if (!respuesta.ok) {
+      throw new Error('HTTP ' + respuesta.status);
+    }
+    return respuesta.json();
+  })
+  .then(publicacion => {
+    console.log('Publicación:', publicacion.id);
+  })
+  .catch(error => {
+    console.log('No se pudo consultar:', error.message);
+  });
+// Si el servicio responde correctamente: Publicación: 1
+// Si hay un fallo HTTP, de conexión o de lectura, se ejecuta catch.
+```
+
+Fuente: [Fetch API](https://www.aprendejavascript.dev/clase/programacion-asincrona/fetch).
+
+### 9.5. async/await
+
+#### Escribir el consumo de promesas como una secuencia de pasos
+
+**Definición breve:** Una función `async` siempre devuelve una promesa. `await` permite esperar un resultado dentro de ella sin bloquear el resto del programa; si la promesa se rechaza, lanza una excepción en ese punto, que puede gestionarse con `try/catch`. Para tareas independientes, inicia sus operaciones y usa `Promise.all()` para esperar sus resultados juntos, evitando esperas secuenciales innecesarias.
+
+**Ejemplo:** esperar dos resultados y comprobar que el programa continúa antes de obtener el total.
+
+```javascript
+async function mostrarTotal() {
+  try {
+    const [primero, segundo] = await Promise.all([
+      Promise.resolve(12),
+      Promise.resolve(18)
+    ]);
+    console.log('Total:', primero + segundo);
+  } catch (error) {
+    console.log('Error:', error.message);
+  }
+}
+
+console.log('Inicio');
+const tarea = mostrarTotal();
+console.log('El programa continúa');
+tarea.then(() => console.log('Proceso terminado'));
+// Orden: Inicio / El programa continúa / Total: 30 / Proceso terminado
+```
+
+Fuente: [async/await](https://www.aprendejavascript.dev/clase/programacion-asincrona/async-await).
