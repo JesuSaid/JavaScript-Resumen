@@ -1,10 +1,11 @@
-# Resumen de JavaScript: Introducción, Estructuras de control, Funciones, Arrays, Objetos, Tipos de datos primitivos, Referencias, Prototipos y Manejo de errores y Programación asíncrona
+# **Resumen de JavaScript:**
+## Introducción, Estructuras de control, Funciones, Arrays, Objetos, Tipos de datos primitivos, Referencias, Prototipos y Manejo de errores y Programación asíncrona
 
 Síntesis de los 53 temas de estas nueve secciones de [Aprende JavaScript](https://www.aprendejavascript.dev/), curso de midudev. Cada tema incluye título, subtítulo, definición breve y un ejemplo propio para practicar.
 
 Los ejemplos son independientes: ejecuta cada bloque por separado en la consola del navegador. Los comentarios junto a `console.log()` indican la salida esperada.
 
-## Índice
+### Índice
 
 1. [Introducción](#1-introducción)
     - [1.1. ¿Qué es JavaScript?](#11-qué-es-javascript)
