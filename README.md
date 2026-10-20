@@ -1,9 +1,9 @@
 # **Resumen de JavaScript:**
 ## Introducción, Estructuras de control, Funciones, Arrays, Objetos, Tipos de datos primitivos, Referencias, Prototipos y Manejo de errores y Programación asíncrona
 
-Síntesis de los 53 temas de estas nueve secciones de [Aprende JavaScript](https://www.aprendejavascript.dev/), curso de midudev. Cada tema incluye título, subtítulo, definición breve y un ejemplo propio para practicar.
+Síntesis de los 65 temas de estas nueve secciones de [Aprende JavaScript](https://www.aprendejavascript.dev/), curso de midudev. Cada tema incluye título, subtítulo, definición breve y un ejemplo propio para practicar.
 
-Los ejemplos son independientes: ejecuta cada bloque por separado en la consola del navegador. Los comentarios junto a `console.log()` indican la salida esperada.
+Cada ejemplo es independiente. Los bloques JavaScript generales pueden probarse en la consola del navegador. En Módulos, guarda los fragmentos en los archivos indicados y cárgalos mediante un servidor HTTP local; los ejemplos de DOM son documentos HTML completos. Los comentarios junto a `console.log()` indican la salida esperada.
 
 ### Índice
 
@@ -69,6 +69,21 @@ Los ejemplos son independientes: ejecuta cada bloque por separado en la consola 
     - [9.3. Promises (Promesas) - Avanzado](#93-promises-promesas---avanzado)
     - [9.4. Fetch API](#94-fetch-api)
     - [9.5. async/await](#95-asyncawait)
+10. [Módulos](#10-módulos)
+    - [10.1. ¿Qué son los Módulos?](#101-qué-son-los-módulos)
+    - [10.2. Export e Import](#102-export-e-import)
+    - [10.3. Importaciones Dinámicas](#103-importaciones-dinámicas)
+    - [10.4. Patrones y Buenas Prácticas](#104-patrones-y-buenas-prácticas)
+11. [DOM y Eventos](#11-dom-y-eventos)
+    - [11.1. Selección de Elementos](#111-selección-de-elementos)
+    - [11.2. Manipulación del DOM](#112-manipulación-del-dom)
+    - [11.3. Eventos y Event Listeners](#113-eventos-y-event-listeners)
+12. [Sets y Maps](#12-sets-y-maps)
+    - [12.1. ¿Qué son Set y Map?](#121-qué-son-set-y-map)
+    - [12.2. Set](#122-set)
+    - [12.3. Operaciones con Sets](#123-operaciones-con-sets)
+    - [12.4. Map](#124-map)
+    - [12.5. WeakSet y WeakMap](#125-weakset-y-weakmap)
 
 ## 1. Introducción
 
