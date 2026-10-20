@@ -1624,3 +1624,101 @@ console.log(formatearMonto(35)); // 35.00 MXN
 ```
 
 Fuente: [Patrones y Buenas Prácticas](https://www.aprendejavascript.dev/clase/modulos/patrones-y-buenas-practicas).
+
+## 11. DOM y Eventos
+
+Selección y modificación de elementos HTML, y respuesta a acciones del usuario o del navegador.
+
+Guarda cada ejemplo como un archivo `.html` independiente y ábrelo en el navegador. Los scripts están después de los elementos que utilizan, para que estos ya existan al ejecutarse.
+
+### 11.1. Selección de Elementos
+
+#### Encontrar nodos de la página desde JavaScript
+
+**Definición breve:** El DOM representa el documento como un árbol de nodos y `document` es su punto de acceso. `querySelector()` usa selectores CSS y devuelve el primer elemento coincidente o `null`; `querySelectorAll()` devuelve una `NodeList` estática. `getElementById()` busca un identificador sin `#`. `getElementsByClassName()` y `getElementsByTagName()` devuelven colecciones vivas. Comprueba la existencia del elemento antes de utilizarlo.
+
+**Ejemplo:** consultar un título, contar elementos y buscar un identificador ausente.
+
+```html
+<!doctype html>
+<meta charset="utf-8">
+<h1 id="titulo">Práctica DOM</h1>
+<ul id="temas">
+  <li class="tema">HTML</li>
+  <li class="tema">JavaScript</li>
+</ul>
+<script>
+  const titulo = document.getElementById('titulo');
+  const temas = document.querySelectorAll('#temas .tema');
+
+  console.log(titulo?.textContent); // Práctica DOM
+  console.log(temas.length); // 2
+  console.log(document.querySelector('#ausente')); // null
+</script>
+```
+
+Fuente: [Selección de Elementos](https://www.aprendejavascript.dev/clase/dom-y-eventos/seleccion-elementos).
+
+### 11.2. Manipulación del DOM
+
+#### Cambiar contenido, atributos y estructura de la página
+
+**Definición breve:** `textContent` trabaja con texto; `innerHTML` interpreta marcado HTML. Para mostrar datos introducidos por usuarios, usa texto en lugar de interpretarlos como HTML. `setAttribute()` modifica atributos, `classList` administra clases y `style` permite cambiar estilos en línea. `createElement()` crea nodos; `append()` o `appendChild()` los insertan y `remove()` los retira del documento.
+
+**Ejemplo:** crear un elemento, configurarlo, insertarlo y retirarlo.
+
+```html
+<!doctype html>
+<meta charset="utf-8">
+<ul id="lista"></ul>
+<script>
+  const lista = document.querySelector('#lista');
+  const elemento = document.createElement('li');
+  elemento.textContent = 'Tema añadido';
+  elemento.classList.add('activo');
+  elemento.setAttribute('data-tema', 'dom');
+  lista.append(elemento);
+
+  console.log(lista.children.length); // 1
+  console.log(elemento.textContent); // Tema añadido
+  console.log(elemento.classList.contains('activo')); // true
+
+  elemento.remove();
+  console.log(lista.children.length); // 0
+</script>
+```
+
+Fuente: [Manipulación del DOM](https://www.aprendejavascript.dev/clase/dom-y-eventos/manipulacion-dom).
+
+### 11.3. Eventos y Event Listeners
+
+#### Responder a acciones y gestionar sus manejadores
+
+**Definición breve:** Eventos como `click`, `input`, `keydown` o `submit` permiten reaccionar a acciones. `addEventListener()` registra un manejador; `removeEventListener()` lo retira usando el mismo tipo, función y valor de captura. El evento informa de su origen con `target` y del elemento que lo atiende con `currentTarget`. `preventDefault()` cancela una acción predeterminada cancelable. La delegación aprovecha la propagación para atender eventos de hijos desde un contenedor.
+
+**Ejemplo:** activar un enlace sin navegar y retirar después el manejador.
+
+```html
+<!doctype html>
+<meta charset="utf-8">
+<a id="accion" href="#destino">Activar</a>
+<output id="estado">Esperando</output>
+<script>
+  const accion = document.querySelector('#accion');
+  const estado = document.querySelector('#estado');
+
+  function activar(evento) {
+    evento.preventDefault();
+    estado.textContent = 'Activado';
+    console.log(evento.type); // click
+    console.log(evento.currentTarget.id); // accion
+  }
+
+  accion.addEventListener('click', activar);
+  accion.click(); // Simula la activación para comprobar el ejemplo.
+  accion.removeEventListener('click', activar);
+  console.log(estado.textContent); // Activado
+</script>
+```
+
+Fuente: [Eventos y Event Listeners](https://www.aprendejavascript.dev/clase/dom-y-eventos/eventos).
