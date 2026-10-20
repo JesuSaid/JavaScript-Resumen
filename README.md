@@ -1497,3 +1497,130 @@ tarea.then(() => console.log('Proceso terminado'));
 ```
 
 Fuente: [async/await](https://www.aprendejavascript.dev/clase/programacion-asincrona/async-await).
+
+## 10. Módulos
+
+Organización del código en archivos que comparten únicamente las funciones, variables y clases que deciden exportar.
+
+Para probar cada tema, guarda sus archivos en una carpeta independiente y añade este `index.html`. Abre la carpeta mediante un servidor HTTP local y consulta la consola del navegador.
+
+```html
+<!doctype html>
+<meta charset="utf-8">
+<script type="module" src="./main.js"></script>
+```
+
+### 10.1. ¿Qué son los Módulos?
+
+#### Separar responsabilidades y mantener un ámbito propio
+
+**Definición breve:** Los módulos dividen el código en archivos con dependencias explícitas y un ámbito propio, evitando colisiones de nombres globales. ES Modules usa `export` e `import` y ejecuta su código en modo estricto. En el navegador se activa con `type="module"`; en Node.js puede utilizarse `.mjs` o la configuración `"type": "module"`. CommonJS es otro sistema, basado en `require()` y `module.exports`.
+
+**Ejemplo:** mantener un prefijo interno y compartir una función.
+
+```javascript
+// mensaje.js
+const prefijo = 'Curso';
+
+export function crearMensaje(tema) {
+  return prefijo + ': ' + tema;
+}
+```
+
+```javascript
+// main.js
+import { crearMensaje } from './mensaje.js';
+
+console.log(crearMensaje('JavaScript')); // Curso: JavaScript
+```
+
+Fuente: [¿Qué son los Módulos?](https://www.aprendejavascript.dev/clase/modulos/que-son-los-modulos).
+
+### 10.2. Export e Import
+
+#### Compartir elementos por nombre o mediante una exportación predeterminada
+
+**Definición breve:** `export` hace accesible un elemento desde otros módulos. Las exportaciones nombradas se importan entre llaves; cada módulo admite como máximo una exportación `default`, que se importa sin llaves y puede recibir otro nombre. `as` permite crear alias y `import * as nombre` agrupa las exportaciones en un espacio de nombres. También es posible reexportar elementos de otro archivo.
+
+**Ejemplo:** combinar una función predeterminada con una constante nombrada y un alias.
+
+```javascript
+// texto.js
+export default function limpiar(texto) {
+  return texto.trim();
+}
+
+export const SEPARADOR = ' | ';
+```
+
+```javascript
+// main.js
+import limpiar, { SEPARADOR as separador } from './texto.js';
+
+console.log(limpiar('  hola  ') + separador + 'listo'); // hola | listo
+```
+
+Fuente: [Export e Import](https://www.aprendejavascript.dev/clase/modulos/export-e-import).
+
+### 10.3. Importaciones Dinámicas
+
+#### Cargar un módulo cuando se necesita
+
+**Definición breve:** `import(ruta)` carga un módulo bajo demanda y devuelve una promesa con su espacio de nombres. Puede usarse dentro de funciones o condicionales y consumirse con `.then()` o `await`. Sirve para cargar funcionalidades opcionales y reducir el código necesario al inicio. Si existe una exportación predeterminada, aparece en la propiedad `default` del módulo importado.
+
+**Ejemplo:** esperar la carga de una función de formato. Este `main.js` se ejecuta como módulo y admite `await` en el nivel superior.
+
+```javascript
+// formato.js
+export function destacar(texto) {
+  return texto.toUpperCase();
+}
+```
+
+```javascript
+// main.js
+try {
+  const { destacar } = await import('./formato.js');
+  console.log(destacar('carga diferida')); // CARGA DIFERIDA
+} catch (error) {
+  console.log('No se pudo cargar:', error.message);
+}
+```
+
+Fuente: [Importaciones Dinámicas](https://www.aprendejavascript.dev/clase/modulos/importaciones-dinamicas).
+
+### 10.4. Patrones y Buenas Prácticas
+
+#### Organizar dependencias y definir una interfaz pública clara
+
+**Definición breve:** Cada módulo debe tener una responsabilidad clara. Centraliza la configuración, importa solo lo necesario y evita dependencias circulares. Un archivo barril reexporta elementos para ofrecer un punto de entrada; conviene limitarlo para no introducir cadenas de dependencias innecesarias. Una fachada simplifica el acceso a una API. Los nombres descriptivos y las rutas explícitas facilitan encontrar el código.
+
+**Ejemplo:** separar configuración, formato y punto de entrada público.
+
+```javascript
+// config.js
+export const MONEDA = 'MXN';
+```
+
+```javascript
+// formato.js
+import { MONEDA } from './config.js';
+
+export function formatearMonto(cantidad) {
+  return cantidad.toFixed(2) + ' ' + MONEDA;
+}
+```
+
+```javascript
+// index.js
+export { formatearMonto } from './formato.js';
+```
+
+```javascript
+// main.js
+import { formatearMonto } from './index.js';
+
+console.log(formatearMonto(35)); // 35.00 MXN
+```
+
+Fuente: [Patrones y Buenas Prácticas](https://www.aprendejavascript.dev/clase/modulos/patrones-y-buenas-practicas).
