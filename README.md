@@ -1722,3 +1722,145 @@ Fuente: [Manipulación del DOM](https://www.aprendejavascript.dev/clase/dom-y-ev
 ```
 
 Fuente: [Eventos y Event Listeners](https://www.aprendejavascript.dev/clase/dom-y-eventos/eventos).
+
+
+## 12. Sets y Maps
+
+Colecciones para mantener valores únicos, asociar claves de distintos tipos y gestionar referencias débiles.
+
+### 12.1. ¿Qué son Set y Map?
+
+#### Elegir entre valores únicos y asociaciones de clave y valor
+
+**Definición breve:** `Set` almacena valores sin duplicados; `Map` asocia claves con valores y admite claves de cualquier tipo. Ambos conservan el orden de inserción. Son alternativas útiles a un array cuando importa la unicidad, o a un objeto cuando las claves son dinámicas o no son cadenas ni símbolos. Los arrays siguen siendo adecuados para acceso por índice y los objetos para entidades con propiedades conocidas.
+
+**Ejemplo:** eliminar repeticiones y distinguir claves numéricas de claves de texto.
+
+```javascript
+const temas = new Set(['DOM', 'DOM', 'Módulos']);
+const etiquetas = new Map([
+  [1, 'número'],
+  ['1', 'texto']
+]);
+
+console.log([...temas]); // ['DOM', 'Módulos']
+console.log(etiquetas.get(1)); // número
+console.log(etiquetas.get('1')); // texto
+```
+
+Fuente: [¿Qué son Set y Map?](https://www.aprendejavascript.dev/clase/sets-y-maps/introduccion).
+
+### 12.2. Set
+
+#### Añadir, comprobar y eliminar valores únicos
+
+**Definición breve:** `new Set(iterable)` crea un conjunto sin duplicados. `add()` añade y devuelve el propio conjunto; `has()` comprueba un valor y `delete()` indica si lo eliminó. `size` informa del tamaño y `clear()` vacía la colección. Puede recorrerse con `for...of` o `forEach()`. Compara objetos por identidad; para los primitivos usa `SameValueZero`, que considera iguales dos valores `NaN` y también `0` y `-0`.
+
+**Ejemplo:** gestionar nombres únicos y comprobar el comportamiento de `NaN`.
+
+```javascript
+const visitas = new Set(['Ana', 'Leo', 'Ana']);
+visitas.add('Eva').add('Leo');
+
+console.log(visitas.size); // 3
+console.log(visitas.has('Leo')); // true
+console.log(visitas.delete('Ana')); // true
+console.log([...visitas]); // ['Leo', 'Eva']
+console.log(new Set([NaN, NaN]).size); // 1
+
+visitas.clear();
+console.log(visitas.size); // 0
+```
+
+Fuente: [Set](https://www.aprendejavascript.dev/clase/sets-y-maps/set).
+
+Referencia complementaria: [Igualdad de valores en Set y Map (MDN)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Keyed_collections).
+
+### 12.3. Operaciones con Sets
+
+#### Combinar conjuntos y comprobar relaciones entre ellos
+
+**Definición breve:** Los métodos de conjuntos permiten combinar valores y comparar pertenencias. Las operaciones que producen un conjunto devuelven uno nuevo, sin modificar los originales; las comprobaciones devuelven booleanos. Estos métodos requieren un entorno que los implemente, como navegadores modernos o Node.js 22 y posteriores.
+
+| Método | Resultado |
+| --- | --- |
+| `union()` | Valores de ambos conjuntos. |
+| `intersection()` | Valores compartidos. |
+| `difference()` | Valores del primero ausentes en el segundo. |
+| `symmetricDifference()` | Valores presentes en uno solo de los conjuntos. |
+| `isSubsetOf()` | Si el primero está contenido en el segundo. |
+| `isSupersetOf()` | Si el primero contiene al segundo. |
+| `isDisjointFrom()` | Si no comparten valores. |
+
+**Ejemplo:** calcular combinaciones y relaciones.
+
+```javascript
+const a = new Set([1, 2, 3]);
+const b = new Set([3, 4]);
+
+console.log([...a.union(b)]); // [1, 2, 3, 4]
+console.log([...a.intersection(b)]); // [3]
+console.log([...a.difference(b)]); // [1, 2]
+console.log([...a.symmetricDifference(b)]); // [1, 2, 4]
+console.log(new Set([1, 2]).isSubsetOf(a)); // true
+console.log(a.isSupersetOf(new Set([3]))); // true
+console.log(a.isDisjointFrom(b)); // false
+```
+
+Fuente: [Operaciones con Sets](https://www.aprendejavascript.dev/clase/sets-y-maps/operaciones).
+
+### 12.4. Map
+
+#### Asociar datos con claves de cualquier tipo
+
+**Definición breve:** `new Map()` crea una colección de pares `[clave, valor]`. `set()` añade o actualiza, `get()` consulta y `has()` comprueba una clave. `delete()` elimina una entrada, `clear()` vacía el mapa y `size` cuenta las entradas. Las claves de tipo objeto se comparan por identidad. `for...of`, `keys()`, `values()` y `entries()` permiten recorrer la colección en orden de inserción.
+
+**Ejemplo:** usar un objeto como clave y actualizar sus puntos.
+
+```javascript
+const ana = { nombre: 'Ana' };
+const puntos = new Map();
+puntos.set(ana, 10).set('equipo', 25);
+puntos.set(ana, 15);
+
+console.log(puntos.get(ana)); // 15
+console.log(puntos.get({ nombre: 'Ana' })); // undefined
+console.log(puntos.has('equipo')); // true
+console.log(puntos.size); // 2
+console.log([...puntos.values()]); // [15, 25]
+
+puntos.delete('equipo');
+console.log(puntos.size); // 1
+puntos.clear();
+console.log(puntos.size); // 0
+```
+
+Fuente: [Map](https://www.aprendejavascript.dev/clase/sets-y-maps/map).
+
+### 12.5. WeakSet y WeakMap
+
+#### Asociar información sin impedir la recolección de objetos
+
+**Definición breve:** `WeakMap` mantiene referencias débiles a sus claves; `WeakSet`, a sus valores. Permiten asociar metadatos o marcar objetos sin impedir su recolección cuando dejan de ser alcanzables por otras referencias. Admiten objetos y símbolos no registrados, y no son iterables ni tienen `size`. El momento de la recolección no es determinista: asignar `null` no garantiza una eliminación inmediata.
+
+**Ejemplo:** guardar metadatos y registrar un objeto visitado.
+
+```javascript
+let usuario = { nombre: 'Ana' };
+const metadatos = new WeakMap();
+const visitados = new WeakSet();
+
+metadatos.set(usuario, { activo: true });
+visitados.add(usuario);
+console.log(metadatos.get(usuario).activo); // true
+console.log(visitados.has(usuario)); // true
+console.log(metadatos.has({ nombre: 'Ana' })); // false
+
+visitados.delete(usuario);
+console.log(visitados.has(usuario)); // false
+usuario = null; // El objeto queda disponible para su eventual recolección.
+```
+
+Fuente: [WeakSet y WeakMap](https://www.aprendejavascript.dev/clase/sets-y-maps/weak).
+
+Referencia complementaria: [Colecciones débiles y claves permitidas (MDN)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Keyed_collections).
