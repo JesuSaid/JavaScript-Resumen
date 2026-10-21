@@ -3,7 +3,7 @@ const displayActual = document.getElementById('operacion-actual')
 const displayAnterior = document.getElementById('operacion-anterior')
 
 // Estado de la calculadora
-const numeroActual = 0
+let numeroActual = '0'
 
 // Implementacion del funcionamiento de los
 // Botones numericos
@@ -28,19 +28,19 @@ botonesNumero.forEach(boton => {
 })
 
 // Funcionamiento de boton de limpiar
-document.getElementById('.clear').addEventListener('click', () => {
+document.getElementById('clear').addEventListener('click', () => {
     numeroActual = '0'
     displayActual.textContent = numeroActual
     displayAnterior.textContent = ''
 })
 
 // Funcionalidad el boton Eliminar
-document.getElementById('detele').addEventListener('click', () => {
+document.getElementById('delete').addEventListener('click', () => {
     if (numeroActual.length > 1) {
         numeroActual = numeroActual.slice(0,-1)
     } else {
         numeroActual = '0'
     }
 
-    numeroActual.textContent = numeroActual
+    displayActual.textContent = numeroActual
 })
