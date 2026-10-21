@@ -26,3 +26,10 @@ botonesNumero.forEach(boton => {
         displayActual.textContent = numeroActual
     })
 })
+
+// Funcionamiento de boton de limpiar
+document.getElementById('.clear').addEventListener('click', () => {
+    numeroActual = '0'
+    displayActual.textContent = numeroActual
+    displayAnterior.textContent = ''
+})
