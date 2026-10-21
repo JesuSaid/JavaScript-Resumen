@@ -57,3 +57,22 @@ function actualizarDisplay() {
     displayActual.textContent = numeroActual
     displayAnterior.textContent = numeroAnterior
 }
+
+function seleccionarOperador(op) {
+    //Si hay una operacion pendiente, calculamos primer
+    if(!debeReset && operador) {
+        calcular()
+    }
+
+    operador = op
+    numeroAnterior = numeroActual + ' ' + op
+    debeReset = true
+    actualizarDisplay()
+}
+
+document.querySelectorAll('.btn-operador').forEach(boton => {
+    boton.addEventListener('click', () => {
+        seleccionarOperador(boton.dataset.operador)
+    })
+})
+
