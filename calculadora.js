@@ -4,3 +4,25 @@ const displayAnterior = document.getElementById('operacion-anterior')
 
 // Estado de la calculadora
 const numeroActual = 0
+
+// Implementacion del funcionamiento de los
+// Botones numericos
+const botonesNumero = document.querySelectorAll('.btn-numero')
+
+botonesNumero.forEach(boton => {
+    boton.addEventListener('click', () => {
+        const numero = boton.dataset.numero
+
+        // Evitar multiples puntos decimales
+        if (numero === '.' && numeroActual.includes('.')) return
+
+        // Remplazar el 0 inicial o concatenar
+        if (numeroActual === '0' && numero !== '.') {
+            numeroActual = numero
+        } else {
+            numeroActual += numero
+        }
+
+        displayActual.textContent = numeroActual
+    })
+})
