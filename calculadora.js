@@ -44,3 +44,49 @@ document.getElementById('delete').addEventListener('click', () => {
 
     displayActual.textContent = numeroActual
 })
+
+function calcular() {
+    if(!operador && debeReset) return
+
+    const anterior = parseFloat(numeroAnterior)
+    const actual = parseFloat(numeroActual)
+
+    if (isNaN(anterior) || isNaN(actual)) return 
+
+    let resultado
+
+    try{
+        switch(operador) {
+            case '+':
+                resultado = anterior + actual
+                break
+            case '-':
+                resultado = anterior - actual
+                break
+            case '×':
+                resultado = anterior * actual
+                break
+            case '÷':
+                if (actual === 0){
+                    throw new Error('No se puede dividir por cero')
+                }
+                resultado = anterior / actual
+                break
+            default:
+                return 
+        }
+
+        // Redondear para evitar errores de punto flotante
+        resultado = Math.round((resultado + Number.EPSILON) * 100000000) / 100000000
+
+        numeroActual = resultado.toString()
+        numeroAnterior = ''
+        operador = null
+        debeReset = false
+    } catch (error) {
+        mostrarError(error.message)
+        return 
+    }
+
+    actualizarDisplay()
+}
