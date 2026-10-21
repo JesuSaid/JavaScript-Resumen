@@ -4,6 +4,9 @@ const displayAnterior = document.getElementById('operacion-anterior')
 
 // Estado de la calculadora
 let numeroActual = '0'
+let numeroAnterior = ''
+let operador = null
+let debeReset = false
 
 // Implementacion del funcionamiento de los
 // Botones numericos
@@ -11,21 +14,26 @@ const botonesNumero = document.querySelectorAll('.btn-numero')
 
 botonesNumero.forEach(boton => {
     boton.addEventListener('click', () => {
-        const numero = boton.dataset.numero
-
-        // Evitar multiples puntos decimales
-        if (numero === '.' && numeroActual.includes('.')) return
-
-        // Remplazar el 0 inicial o concatenar
-        if (numeroActual === '0' && numero !== '.') {
-            numeroActual = numero
-        } else {
-            numeroActual += numero
-        }
-
-        displayActual.textContent = numeroActual
+        agregarNumero(boton.dataset.numero)
     })
 })
+
+function agregarNumero(numero) {
+    if(debeReset) {
+        numeroActual = "0"
+        debeReset = false
+    }
+    // Evitar multiples puntos decimales
+    if (numero === '.' && numeroActual.includes('.')) return
+
+    // Remplazar el 0 inicial o concatenar
+    if (numeroActual === '0' && numero !== '.') {
+        numeroActual = numero
+    } else {
+        numeroActual += numero
+    }
+    actualizarDisplay()
+}
 
 // Funcionamiento de boton de limpiar
 document.getElementById('clear').addEventListener('click', () => {
@@ -44,3 +52,8 @@ document.getElementById('delete').addEventListener('click', () => {
 
     displayActual.textContent = numeroActual
 })
+
+function actualizarDisplay() {
+    displayActual.textContent = numeroActual
+    displayAnterior.textContent = numeroAnterior
+}
