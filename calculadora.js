@@ -26,3 +26,14 @@ botonesNumero.forEach(boton => {
         displayActual.textContent = numeroActual
     })
 })
+
+// Funcionalidad el boton Eliminar
+document.getElementById('detele').addEventListener('click', () => {
+    if (numeroActual.length > 1) {
+        numeroActual = numeroActual.slice(0,-1)
+    } else {
+        numeroActual = '0'
+    }
+
+    numeroActual.textContent = numeroActual
+})
