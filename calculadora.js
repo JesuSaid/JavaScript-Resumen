@@ -18,6 +18,10 @@ botonesNumero.forEach(boton => {
     })
 })
 
+document.getElementById('clear').addEventListener('click', limpiar)
+
+document.getElementById('igual').addEventListener('click', calcular)
+
 function agregarNumero(numero) {
     if(debeReset) {
         numeroActual = "0"
@@ -35,13 +39,6 @@ function agregarNumero(numero) {
     actualizarDisplay()
 }
 
-// Funcionamiento de boton de limpiar
-document.getElementById('clear').addEventListener('click', () => {
-    numeroActual = '0'
-    displayActual.textContent = numeroActual
-    displayAnterior.textContent = ''
-})
-
 // Funcionalidad el boton Eliminar
 document.getElementById('delete').addEventListener('click', () => {
     if (numeroActual.length > 1) {
@@ -50,7 +47,7 @@ document.getElementById('delete').addEventListener('click', () => {
         numeroActual = '0'
     }
 
-    displayActual.textContent = numeroActual
+    actualizarDisplay()
 })
 
 
@@ -123,3 +120,10 @@ function calcular() {
     actualizarDisplay()
 }
 
+function limpiar() {
+    numeroActual = '0'
+    numeroAnterior = ''
+    operador = null
+    debeReset = false
+    actualizarDisplay()
+}
