@@ -1,7 +1,7 @@
 # **Resumen de JavaScript:**
 ## Introducción, Estructuras de control, Funciones, Arrays, Objetos, Tipos de datos primitivos, Referencias, Prototipos y Manejo de errores y Programación asíncrona
 
-Síntesis de los 65 temas de estas nueve secciones de [Aprende JavaScript](https://www.aprendejavascript.dev/), curso de midudev. Cada tema incluye título, subtítulo, definición breve y un ejemplo propio para practicar.
+Síntesis de los 65 temas de estas nueve secciones de [Aprende JavaScript](https://www.aprendejavascript.dev/), curso de midudev. Cada tema incluye título, subtítulo, definición breve y un ejemplo propio para practicar. Al final se añade una sección de Proyecto que integra las tres lecciones prácticas de DOM y Eventos en una explicación conjunta.
 
 Cada ejemplo es independiente. Los bloques JavaScript generales pueden probarse en la consola del navegador. En Módulos, guarda los fragmentos en los archivos indicados y cárgalos mediante un servidor HTTP local; los ejemplos de DOM son documentos HTML completos. Los comentarios junto a `console.log()` indican la salida esperada.
 
@@ -84,6 +84,7 @@ Cada ejemplo es independiente. Los bloques JavaScript generales pueden probarse 
     - [12.3. Operaciones con Sets](#123-operaciones-con-sets)
     - [12.4. Map](#124-map)
     - [12.5. WeakSet y WeakMap](#125-weakset-y-weakmap)
+13. [Proyecto: calculadora interactiva con DOM y Eventos](#13-proyecto-calculadora-interactiva-con-dom-y-eventos)
 
 ## 1. Introducción
 
@@ -1864,3 +1865,124 @@ usuario = null; // El objeto queda disponible para su eventual recolección.
 Fuente: [WeakSet y WeakMap](https://www.aprendejavascript.dev/clase/sets-y-maps/weak).
 
 Referencia complementaria: [Colecciones débiles y claves permitidas (MDN)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Keyed_collections).
+
+## 13. Proyecto: calculadora interactiva con DOM y Eventos
+
+*De una interfaz con botones a una calculadora con teclado e historial.*
+
+El proyecto del curso consiste en desarrollar una calculadora web para practicar cómo JavaScript conecta las acciones del usuario con cambios visibles en una página. Su construcción se reparte en tres lecciones, aquí reunidas como un único proceso. El DOM es la representación de los elementos HTML que JavaScript puede consultar y modificar; los eventos son avisos de acciones, como un clic o una pulsación.
+
+![Interfaz inicial de la calculadora con pantalla, botones e historial vacío](</img/calculadora-interfaz.jpg>)
+
+*Captura 1. Calculadora abierta en el servidor local: los botones permiten introducir datos y el panel inferior reúne las operaciones realizadas.*
+
+Los siguientes bloques son fragmentos didácticos simplificados para explicar el funcionamiento, no una copia completa del código de la aplicación. Comparten el estado y las funciones del proyecto; deben leerse en ese contexto.
+
+Se comenzó separando el trabajo en tres archivos: `index.html` para la estructura, `calculadora.css` para la apariencia y `calculadora.js` para el comportamiento. El HTML incluyó una pantalla y botones. JavaScript localizó esos elementos con `getElementById()` y `querySelectorAll()`, y registró sus clics mediante `addEventListener()`. Los atributos `data-numero` permitieron identificar cada dígito. La entrada se guardó como texto para formar números de varias cifras, impedir puntos decimales repetidos y actualizar la pantalla con `textContent`. También se incorporaron los botones de limpiar y borrar el último carácter. [Fuente: estructura y primeros clics](https://www.aprendejavascript.dev/clase/dom-y-eventos/proyecto-estructura).
+
+**La estructura y los primeros clics.** Esta muestra de HTML relaciona una pantalla con un botón. El atributo `data-numero` guarda el valor que JavaScript leerá al pulsarlo.
+
+```html
+<!-- Fragmento de index.html: la aplicación contiene más botones. -->
+<div id="operacion-anterior"></div>
+<div id="operacion-actual">0</div>
+<button class="btn-numero" data-numero="5">5</button>
+```
+
+```javascript
+const displayActual = document.getElementById('operacion-actual');
+let numeroActual = '0';
+
+document.querySelectorAll('.btn-numero').forEach(boton => {
+  boton.addEventListener('click', () => {
+    const digito = boton.dataset.numero;
+    if (digito === '.' && numeroActual.includes('.')) return;
+    numeroActual = numeroActual === '0' && digito !== '.'
+      ? digito
+      : numeroActual + digito;
+    displayActual.textContent = numeroActual;
+  });
+});
+```
+
+Aquí se construye texto: pulsar `5` y después `3` forma `53`, no realiza todavía una suma. La lógica de cálculo se añade a continuación.
+
+Después se añadió el cálculo. Para recordar la operación pendiente se mantuvo un estado: el número actual, el anterior, el operador elegido y una bandera que indica cuándo comenzar una entrada nueva. Las funciones de introducir cifras, seleccionar operadores y actualizar la pantalla separaron responsabilidades. Al pulsar igual, `parseFloat()` convirtió el texto a números y un `switch` eligió entre suma, resta, multiplicación y división. Se incorporaron el encadenamiento de operaciones, el redondeo a ocho decimales para reducir artefactos de representación y un error explícito al dividir entre cero, capturado con `try/catch` y mostrado temporalmente. Así, al introducir `5`, `+`, `3` e `=`, se muestra `8`; el siguiente dígito comienza otro número. [Fuente: operaciones de la calculadora](https://www.aprendejavascript.dev/clase/dom-y-eventos/proyecto-operaciones).
+
+![Calculadora con la operación cinco más tres preparada antes de pulsar igual](</img/calculadora-operacion.jpg>)
+
+*Captura 2. La línea superior recuerda `5 +` y la principal muestra el segundo número, `3`: la operación está preparada, pero todavía no se ha resuelto.*
+
+**El cálculo y sus errores.** Esta función resume la elección de la operación. Recibe números ya convertidos; la aplicación completa se encarga además de actualizar el estado y redondear el resultado.
+
+```javascript
+function resolver(primero, signo, segundo) {
+  switch (signo) {
+    case '+': return primero + segundo;
+    case '-': return primero - segundo;
+    case '×': return primero * segundo;
+    case '÷':
+      if (segundo === 0) throw new Error('División por cero');
+      return primero / segundo;
+    default: throw new Error('Operación no reconocida');
+  }
+}
+
+try {
+  console.log(resolver(5, '+', 3)); // 8
+} catch (error) {
+  displayActual.textContent = error.message;
+}
+```
+
+La última ampliación permitió usar el teclado sin duplicar los cálculos: el evento `keydown` llamó a las mismas funciones que los botones. Se tradujeron `*` y `/` a multiplicación y división; `Enter` resolvió, `Escape` limpió y `Backspace` borró. Cuando correspondía, `preventDefault()` evitó acciones del navegador.
+
+**El teclado reutiliza la lógica existente.** Este fragmento muestra números, operadores e igual; las funciones llamadas pertenecen a la calculadora completa. Limpiar y borrar se conectan de la misma manera.
+
+```javascript
+document.addEventListener('keydown', evento => {
+  const tecla = evento.key;
+  const signos = { '+': '+', '-': '-', '*': '×', '/': '÷' };
+  if (/^[0-9.]$/.test(tecla)) {
+    evento.preventDefault();
+    agregarNumero(tecla);
+  } else if (Object.hasOwn(signos, tecla)) {
+    evento.preventDefault();
+    seleccionarOperador(signos[tecla]);
+  } else if (tecla === 'Enter' || tecla === '=') {
+    evento.preventDefault();
+    calcular();
+  }
+});
+```
+
+También se creó un historial con las diez operaciones más recientes, almacenadas en un array. Cada registro se convirtió en un elemento visible con `createElement()`, `textContent` y `appendChild()`. Al pulsarlo, su resultado volvió a la pantalla para reutilizarlo. Para conservar los registros entre sesiones se utilizó `localStorage`: `JSON.stringify()` preparó los datos para guardarlos y `JSON.parse()` los recuperó. Un botón permitió vaciar el historial. [Fuente: teclado e historial](https://www.aprendejavascript.dev/clase/dom-y-eventos/proyecto-teclado-historial).
+
+**Guardar y representar una operación.** La muestra conserva hasta diez registros y crea su representación visual. En el proyecto completo se añaden la recuperación inicial con `JSON.parse()`, el clic para reutilizar resultados y el botón de vaciado.
+
+```javascript
+let historial = [];
+const listaHistorial = document.getElementById('lista-historial');
+
+function registrarOperacion(texto) {
+  historial = [texto, ...historial].slice(0, 10);
+  localStorage.setItem('calculadora-historial', JSON.stringify(historial));
+
+  listaHistorial.replaceChildren();
+  historial.forEach(registro => {
+    const fila = document.createElement('div');
+    fila.className = 'operacion-historial';
+    fila.textContent = registro;
+    listaHistorial.appendChild(fila);
+  });
+}
+
+// Se llama tras resolver correctamente el cálculo:
+// registrarOperacion('5 + 3 = 8');
+```
+
+![Resultado ocho en la calculadora y registro cinco más tres igual a ocho en el historial](</img/calculadora-historial.jpg>)
+
+*Captura 3. Al pulsar igual, la pantalla muestra `8` y el historial incorpora `5 + 3 = 8`. Esta secuencia se realizó en la calculadora local para obtener las capturas.*
+
+En conjunto, se trabajó la selección y modificación del DOM, los eventos, las funciones reutilizables, el estado, los arrays, los errores y el almacenamiento local. Para comprobar el resultado, el curso propone realizar operaciones, probar el teclado, recuperar resultados del historial y volver a abrir la aplicación para revisar su conservación.
