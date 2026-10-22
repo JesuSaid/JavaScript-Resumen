@@ -134,3 +134,43 @@ document.getElementById('delete').addEventListener('click', () => {
 
     actualizarDisplay()
 })
+
+document.addEventListener('keydown', (evento) => {
+    const tecla = evento.key
+
+    // Numeros y putno decimal
+    if('0123456789.'.includes(tecla)){
+        evento.preventDefault()
+        agregarNumero(tecla)
+
+        // Operadores
+    } else if (tecla === '+'){ 
+        evento.preventDefault()
+        seleccionarOperador('+')
+    } else if (tecla === '-'){
+        evento.preventDefault()
+        seleccionarOperador('-')
+    } else if (tecla === '*') {
+        evento.preventDefault()
+        seleccionarOperador('×')
+    } else if (tecla === '/') {
+        evento.preventDefault()
+        seleccionarOperador('÷')
+        // Igual (Enter o =)
+    } else if (tecla ==='Enter' || tecla === '=') {
+        evento.preventDefault()
+        calcular()
+        // Limpiar (Escape)
+    } else if (tecla === 'Escape') {
+        limpiar()
+        //Borrar (Backspace)
+    } else if (tecla === 'Backspace') {
+        evento.preventDefault()
+        if (numeroActual.length > 1) {
+            numeroActual = numeroActual.slice(0,-1)
+        } else {
+            numeroActual = '0'
+        }
+        actualizarDisplay()
+    }
+})
