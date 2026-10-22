@@ -7,6 +7,10 @@ let numeroActual = '0'
 let numeroAnterior = ''
 let operador = null
 let debeReset = false
+const listaHistorial = document.getElementById('lista-historial')
+let historial = []
+
+cargarHistorial()
 
 function agregarNumero(numero) {
     if(debeReset) {
@@ -74,6 +78,7 @@ function calcular() {
         // Redondear para evitar errores de punto flotante
         resultado = Math.round((resultado + Number.EPSILON) * 100000000) / 100000000
 
+        agregarAlHistorial(`${anterior} ${operador} ${actual} = ${resultado}`)
         numeroActual = resultado.toString()
         numeroAnterior = ''
         operador = null
@@ -102,6 +107,54 @@ function limpiar() {
     operador = null
     debeReset = false
     actualizarDisplay()
+}
+
+function agregarAlHistorial(operacion) {
+    historial.unshift(operacion)  //Agregar al principio
+
+    // Limitar a las ultimas 10 operaciones
+    if (historial.length >10) {
+        historial = historial.slice(0, 10)
+    }
+
+    renderizarHistorial()
+    guardarHistorial()
+}
+
+function renderizarHistorial() {
+    // Limpiar contenedor
+    listaHistorial.innerHTML = ''
+
+    historial.forEach(operacion => {
+        const div = document.createElement('div')
+        div.className = 'operacion-historial'
+        div.textContent = operacion
+
+        // Al hacer click, usar el resultado de esa operacion
+        div.addEventListener('click', () => {
+            const resultado = operacion.split(' = ')[1]
+            if (resultado) {
+                numeroActual = resultado
+                numeroAnterior = ''
+                operador = null
+                debeReset = true
+                actualizarDisplay()
+            }
+        })
+        listaHistorial.appendChild(div)
+    })
+}
+
+function guardarHistorial() {
+    localStorage.setItem('calculadora-historial', JSON.stringify(historial))
+}
+
+function cargarHistorial() {
+    const guardado = localStorage.getItem('calculadora-historial')
+    if (guardado) {
+        historial = JSON.parse(guardado)
+        renderizarHistorial()
+    }
 }
 
 // Implementacion del funcionamiento de los
@@ -173,4 +226,11 @@ document.addEventListener('keydown', (evento) => {
         }
         actualizarDisplay()
     }
+})
+
+// Boton de limpiar el historial
+document.getElementById('limpiar-historial').addEventListener('click', ()=> {
+    historial = []
+    renderizarHistorial()
+    guardarHistorial()
 })
