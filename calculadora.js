@@ -8,20 +8,6 @@ let numeroAnterior = ''
 let operador = null
 let debeReset = false
 
-// Implementacion del funcionamiento de los
-// Botones numericos
-const botonesNumero = document.querySelectorAll('.btn-numero')
-
-botonesNumero.forEach(boton => {
-    boton.addEventListener('click', () => {
-        agregarNumero(boton.dataset.numero)
-    })
-})
-
-document.getElementById('clear').addEventListener('click', limpiar)
-
-document.getElementById('igual').addEventListener('click', calcular)
-
 function agregarNumero(numero) {
     if(debeReset) {
         numeroActual = "0"
@@ -39,18 +25,6 @@ function agregarNumero(numero) {
     actualizarDisplay()
 }
 
-// Funcionalidad el boton Eliminar
-document.getElementById('delete').addEventListener('click', () => {
-    if (numeroActual.length > 1) {
-        numeroActual = numeroActual.slice(0,-1)
-    } else {
-        numeroActual = '0'
-    }
-
-    actualizarDisplay()
-})
-
-
 function actualizarDisplay() {
     displayActual.textContent = numeroActual
     displayAnterior.textContent = numeroAnterior
@@ -58,21 +32,13 @@ function actualizarDisplay() {
 
 function seleccionarOperador(op) {
     //Si hay una operacion pendiente, calculamos primer
-    if(!debeReset && operador) {
-        calcular()
-    }
+    if(!debeReset && operador) calcular()
 
     operador = op
     numeroAnterior = numeroActual + ' ' + op
     debeReset = true
     actualizarDisplay()
 }
-
-document.querySelectorAll('.btn-operador').forEach(boton => {
-    boton.addEventListener('click', () => {
-        seleccionarOperador(boton.dataset.operador)
-    })
-})
 
 function calcular() {
     if(!operador && debeReset) return
@@ -127,3 +93,34 @@ function limpiar() {
     debeReset = false
     actualizarDisplay()
 }
+
+// Implementacion del funcionamiento de los
+// Botones numericos
+const botonesNumero = document.querySelectorAll('.btn-numero')
+
+botonesNumero.forEach(boton => {
+    boton.addEventListener('click', () => {
+        agregarNumero(boton.dataset.numero)
+    })
+})
+
+document.querySelectorAll('.btn-operador').forEach(boton => {
+    boton.addEventListener('click', () => {
+        seleccionarOperador(boton.dataset.operador)
+    })
+})
+
+document.getElementById('clear').addEventListener('click', limpiar)
+
+document.getElementById('igual').addEventListener('click', calcular)
+
+// Funcionalidad el boton Eliminar
+document.getElementById('delete').addEventListener('click', () => {
+    if (numeroActual.length > 1) {
+        numeroActual = numeroActual.slice(0,-1)
+    } else {
+        numeroActual = '0'
+    }
+
+    actualizarDisplay()
+})
