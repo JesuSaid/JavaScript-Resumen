@@ -123,3 +123,11 @@ function calcular() {
     actualizarDisplay()
 }
 
+function mostrarError(mensaje) {
+    displayActual.textContent = "Error"
+    displayAnterior.textContent = mensaje
+
+    setTimeout(() =>{
+        limpiar()
+    }, 2000)
+}
